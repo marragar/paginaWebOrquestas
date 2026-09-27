@@ -1,9 +1,12 @@
-"""Dependencias reutilizables para los routers (usuario actual, control de roles...)."""
+"""Dependencias reutilizables para los routers (cuenta actual, permisos...)."""
 
-# TODO: get_current_user -> lee el header Authorization: Bearer <token>,
-#       lo decodifica con decode_access_token y carga el Usuario de la BD.
-#       Debe rechazar cuentas con activo=False.
+# TODO: get_current_usuario -> lee el header Authorization: Bearer <token>,
+#       lo decodifica con decode_access_token, comprueba que tipo == TipoCuenta.USUARIO
+#       y carga el Usuario de la BD (401 si no existe, 403 si el token es de orquesta).
 
-# TODO: require_rol(*roles) -> dependencia que lanza 403 si el usuario
-#       no tiene uno de los roles indicados. Ejemplo de uso:
-#       @router.get("/...", dependencies=[Depends(require_rol(Rol.ADMIN))])
+# TODO: get_current_orquesta -> igual, pero para TipoCuenta.ORQUESTA y el modelo Orquesta.
+
+# TODO: get_current_admin -> usa get_current_usuario y lanza 403 si es_admin es False.
+#       Ejemplo de uso:
+#       @router.get("/...")
+#       def endpoint(admin: Usuario = Depends(get_current_admin)): ...

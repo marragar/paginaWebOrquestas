@@ -241,7 +241,7 @@ aviso en la consola del navegador.
 
 {error ? <p className="error">{error}</p> : <ListaOrquestas orquestas={orquestas} />}
 
-{usuario?.rol === 'ORQUESTA' && <Link to="/mi-orquesta">Mi panel</Link>}
+{cuenta?.tipo === 'orquesta' && <Link to="/mi-orquesta">Mi panel</Link>}
 ```
 
 - `condicion && <X />` → pinta `<X />` solo si la condición es verdadera.
@@ -399,7 +399,7 @@ navigate('/mis-reservas')
 
 ## 13. Datos compartidos por toda la app (Context)
 
-Algunos datos los necesitan muchos componentes, como **el usuario que ha iniciado sesión**.
+Algunos datos los necesitan muchos componentes, como **la cuenta que ha iniciado sesión**.
 Pasarlos por props de padre a hijo a nieto... es incómodo. Para eso está el *Context*:
 
 ```jsx
@@ -409,12 +409,12 @@ import { createContext, useContext, useState } from 'react'
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [usuario, setUsuario] = useState(null)
+  const [cuenta, setCuenta] = useState(null)   // usuario u orquesta
 
   // aquí irán login(), logout(), cargar /auth/me al arrancar...
 
   return (
-    <AuthContext.Provider value={{ usuario, setUsuario }}>
+    <AuthContext.Provider value={{ cuenta, setCuenta }}>
       {children}
     </AuthContext.Provider>
   )
@@ -429,7 +429,7 @@ Se envuelve la app con el *provider* (en `main.jsx`, alrededor de `<App />`) y c
 componente puede hacer:
 
 ```jsx
-const { usuario } = useAuth()
+const { cuenta } = useAuth()
 ```
 
 `children` es una prop especial: lo que va entre la etiqueta de apertura y cierre del componente.
@@ -476,8 +476,8 @@ lista.map((x) => ...)       // transformar cada elemento
 lista.filter((x) => ...)    // quedarse con algunos
 lista.find((x) => ...)      // el primero que cumpla
 
-// Encadenamiento opcional: no falla si usuario es null
-usuario?.rol
+// Encadenamiento opcional: no falla si cuenta es null
+cuenta?.tipo
 
 // Plantillas de texto
 `/orquestas/${id}`

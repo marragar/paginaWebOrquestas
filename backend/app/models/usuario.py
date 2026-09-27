@@ -2,27 +2,40 @@ import enum
 from datetime import datetime
 
 from sqlalchemy import Enum, String, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
+from backend.app.models.reserva import Reserva
 
 
-class Rol(str, enum.Enum):
-    ORQUESTA = "ORQUESTA"
-    USUARIO = "USUARIO"
-    ADMIN = "ADMIN"
+class TipoUsuario(str, enum.Enum):
+    AYUNTAMIENTO = "ayuntamiento"
+    JUNTA_VECINAL = "junta_vecinal"
+    COMISION_FIESTAS = "comision_fiestas"
+    PARTICULAR = "particular"
 
 
 class Usuario(Base):
-    """Modelo de ejemplo (SPEC §3 usuario). Úsalo como referencia para el resto."""
+    """Modelo de ejemplo (SPEC §3 usuarios). Úsalo como referencia para el resto."""
 
-    __tablename__ = "usuario"
+    __tablename__ = "usuarios"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(String(255))
-    rol: Mapped[Rol] = mapped_column(Enum(Rol, name="rol"))
-    activo: Mapped[bool] = mapped_column(default=True)
+    nombre: Mapped[str] = mapped_column(String(255))
+    # values_callable hace que en la BD se guarde el valor ("junta_vecinal")
+    # y no el nombre del miembro ("JUNTA_VECINAL")
+    tipo: Mapped[TipoUsuario] = mapped_column(
+        Enum(TipoUsuario, name="tipo_usuario", values_callable=lambda e: [m.value for m in e])
+    )
+    # Mapped[... | None] -> columna opcional (NULL permitido)
+    cif: Mapped[str | None] = mapped_column(String(20))
+    municipio: Mapped[str | None] = mapped_column(String(255))
+    provincia: Mapped[str | None] = mapped_column(String(100))
+    telefono: Mapped[str | None] = mapped_column(String(9))
+    es_admin: Mapped[bool] = mapped_column(default=False)
     creado_en: Mapped[datetime] = mapped_column(server_default=func.now())
 
-    # TODO: relationships 1:1 con perfil_orquesta / perfil_contratante
+    # TODO: relationship con reservas (un usuario tiene muchas reservas)
+    reservas: Mapped[list["Reserva"]] = relationship(back_populates="usuario")

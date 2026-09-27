@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, EmailStr
 
-from app.models.usuario import Rol
+from app.models.usuario import TipoUsuario
 
 
 class UsuarioOut(BaseModel):
@@ -10,9 +10,16 @@ class UsuarioOut(BaseModel):
 
     id: int
     email: EmailStr
-    rol: Rol
-    activo: bool
+    nombre: str
+    tipo: TipoUsuario
+    cif: str | None
+    municipio: str | None
+    provincia: str | None
+    telefono: str | None
+    es_admin: bool
 
 
-# TODO: RegistroIn (email, password, rol + datos del perfil según el rol)
-# TODO: LoginIn, TokenOut
+# TODO: UsuarioRegistroIn (email, password, nombre, tipo y campos opcionales; ¡nunca es_admin!)
+# TODO: UsuarioUpdateIn para PUT /mi-perfil
+# TODO: LoginIn, TokenOut (compartidos por los dos logins -> quizá en schemas/auth.py)
+# TODO: schemas/orquesta.py, schemas/disponibilidad.py, schemas/reserva.py

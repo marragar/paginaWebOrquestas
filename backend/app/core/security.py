@@ -1,4 +1,13 @@
+import enum
+
 import bcrypt
+
+
+class TipoCuenta(str, enum.Enum):
+    """Qué tipo de cuenta hay detrás de un token (SPEC §2: logins separados)."""
+
+    USUARIO = "usuario"
+    ORQUESTA = "orquesta"
 
 
 def hash_password(password: str) -> str:
@@ -9,8 +18,9 @@ def verify_password(password: str, password_hash: str) -> bool:
     return bcrypt.checkpw(password.encode(), password_hash.encode())
 
 
-def create_access_token(usuario_id: int, rol: str) -> str:
-    # TODO: generar un JWT con pyjwt (sub, rol, exp) usando settings.jwt_secret
+def create_access_token(cuenta_id: int, tipo: TipoCuenta) -> str:
+    # TODO: generar un JWT con pyjwt (sub=cuenta_id, tipo, exp) usando settings.jwt_secret.
+    #       El "tipo" es imprescindible: el usuario 5 y la orquesta 5 son cuentas distintas.
     raise NotImplementedError
 
 
