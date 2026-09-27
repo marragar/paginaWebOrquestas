@@ -9,7 +9,11 @@ from sqlalchemy import Date, Enum, ForeignKey, Numeric, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
-from backend.app.models.orquesta import Orquesta
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from backend.app.models.orquesta import Orquesta
 
 
 class EstadoDisponibilidad(str, enum.Enum):
@@ -24,7 +28,7 @@ class Disponibilidad(Base):
         # Restricción única (orquesta_id, fecha)
         # Esto asegura que una orquesta no tenga dos disponibilidades para la misma fecha
         # y que no haya conflictos al reservar.
-        UniqueConstraint("orquesta", "fecha", name="uix_orquesta_fecha"),
+        UniqueConstraint("orquesta_id", "fecha", name="uix_orquesta_fecha"),
     )
     
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -33,7 +37,7 @@ class Disponibilidad(Base):
     estado: Mapped[EstadoDisponibilidad] = mapped_column(
         Enum(EstadoDisponibilidad, name="estado_disponibilidad", values_callable=lambda e: [m.value for m in e]),
         default=EstadoDisponibilidad.DISPONIBLE
-    ),
+    )
     precio: Mapped[Decimal] = mapped_column(Numeric(10,2))
     notas: Mapped[str | None] = mapped_column(String(255))
     orquesta: Mapped["Orquesta"] = relationship("Orquesta", back_populates="disponibilidades")

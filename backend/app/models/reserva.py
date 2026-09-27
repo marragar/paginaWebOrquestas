@@ -10,8 +10,12 @@ from sqlalchemy import DateTime, Enum, ForeignKey, Index, String, Time, func, te
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
-from backend.app.models.disponibilidad import Disponibilidad
-from backend.app.models.usuario import Usuario
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from backend.app.models.disponibilidad import Disponibilidad
+    from backend.app.models.usuario import Usuario
 
 
 class EstadoReserva(str, enum.Enum):
