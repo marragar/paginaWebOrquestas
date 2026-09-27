@@ -1,7 +1,7 @@
 import enum
 from datetime import datetime
 
-from sqlalchemy import Enum, String, func
+from sqlalchemy import DateTime, Enum, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -40,7 +40,7 @@ class Usuario(Base):
     provincia: Mapped[str | None] = mapped_column(String(100))
     telefono: Mapped[str | None] = mapped_column(String(9))
     es_admin: Mapped[bool] = mapped_column(default=False)
-    creado_en: Mapped[datetime] = mapped_column(server_default=func.now())
+    creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True),server_default=func.now())
 
     # TODO: relationship con reservas (un usuario tiene muchas reservas)
     reservas: Mapped[list["Reserva"]] = relationship(back_populates="usuario")

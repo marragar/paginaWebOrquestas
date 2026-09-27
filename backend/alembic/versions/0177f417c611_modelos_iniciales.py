@@ -86,4 +86,8 @@ def downgrade() -> None:
     op.drop_table('usuarios')
     op.drop_index(op.f('ix_orquestas_email'), table_name='orquestas')
     op.drop_table('orquestas')
+    sa.Enum(name="estado_reserva").drop(op.get_bind(), checkfirst=True)
+    sa.Enum(name="estado_disponibilidad").drop(op.get_bind(), checkfirst=True)
+    sa.Enum(name="tipo_usuario").drop(op.get_bind(), checkfirst=True)
+    sa.Enum(name="tipo_orquesta").drop(op.get_bind(), checkfirst=True)
     # ### end Alembic commands ###

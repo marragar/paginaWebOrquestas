@@ -5,7 +5,7 @@ import enum
 from datetime import datetime
 from decimal import Decimal
 
-from sqlalchemy import Enum, Numeric, String, Text, func
+from sqlalchemy import DateTime, Enum, Numeric, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -38,7 +38,7 @@ class Orquesta(Base):
     precio_base: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
     telefono: Mapped[str] = mapped_column(String(20))
     verificada: Mapped[bool] = mapped_column(default=False)
-    creado_en: Mapped[datetime] = mapped_column(server_default=func.now())
+    creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True),server_default=func.now())
 
     # TODO: relationship con disponibilidades (una orquesta tiene muchas), cuando exista el modelo:
     disponibilidades: Mapped[list["Disponibilidad"]] = relationship(back_populates="orquesta")
