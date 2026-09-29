@@ -1,0 +1,118 @@
+.resumen {
+  display: flex;
+  gap: 28px;
+  margin: 0;
+}
+
+.resumen div {
+  border-top: 4px solid var(--linea);
+  padding-top: 6px;
+  min-width: 80px;
+}
+
+.resumen .resumen--libre { border-top-color: var(--verde); }
+.resumen .resumen--reservada { border-top-color: var(--rojo); }
+
+.resumen dt {
+  font-size: var(--t-s);
+  color: var(--tinta-suave);
+}
+
+.resumen dd {
+  margin: 0;
+  font: 900 var(--t-2xl) / 1 var(--f-cartel);
+}
+
+.panel-calendario {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .panel-calendario {
+    grid-template-columns: 1fr;
+  }
+
+  .acciones-dia {
+    position: static;
+    scroll-margin-top: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .resumen {
+    width: 100%;
+    gap: 16px;
+  }
+
+  .resumen div {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .resumen dd {
+    font-size: var(--t-xl);
+  }
+
+  .acciones-dia-botones .boton {
+    flex: 1 1 100%;
+  }
+
+  .marcados {
+    max-height: none;
+  }
+}
+
+.acciones-dia {
+  display: grid;
+  gap: 18px;
+  position: sticky;
+  top: 16px;
+}
+
+.acciones-dia h2 {
+  margin: 0;
+}
+
+.acciones-dia p {
+  margin: 0;
+}
+
+.acciones-dia-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.marcados {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.marcados li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--t-s);
+}
+
+.marcados-fecha {
+  flex: 1;
+}
+
+.marcados-fecha::first-letter {
+  text-transform: uppercase;
+}
+
+.nota-reservada {
+  font-size: var(--t-s);
+  color: var(--texto-rechazo);
+}

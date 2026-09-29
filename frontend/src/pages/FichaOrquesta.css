@@ -1,0 +1,116 @@
+.volver {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: var(--t-s);
+  color: var(--tinta-suave);
+  margin-bottom: 12px;
+}
+
+.volver::before {
+  content: '‹';
+  margin-right: 6px;
+}
+
+.ficha-cabecera {
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid var(--tinta);
+}
+
+.ficha-nombre {
+  font-size: clamp(2.6rem, 6vw, 4.5rem);
+  font-weight: 900;
+  line-height: 0.95;
+  margin-bottom: 16px;
+}
+
+.ficha-datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  margin: 0 0 20px;
+}
+
+.ficha-datos dt {
+  font-size: var(--t-xs);
+  color: var(--tinta-suave);
+}
+
+.ficha-datos dd {
+  margin: 0;
+  font: 800 var(--t-l) / 1.2 var(--f-cartel);
+}
+
+.ficha-descripcion {
+  font-size: 1.05rem;
+  margin: 0 0 20px;
+}
+
+.ficha-reserva {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.ficha-solicitud {
+  padding-top: 46px; /* alinea con el calendario, bajo su título */
+}
+
+@media (max-width: 860px) {
+  .ficha-reserva {
+    grid-template-columns: 1fr;
+  }
+
+  .ficha-solicitud {
+    padding-top: 0;
+    scroll-margin-top: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ficha-datos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ficha-contacto .boton {
+    flex: 1 1 100%;
+  }
+}
+
+.solicitud {
+  display: grid;
+  gap: 16px;
+}
+
+.solicitud h3,
+.solicitud p {
+  margin: 0;
+}
+
+.solicitud-resumen {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--linea);
+}
+
+.solicitud-fecha {
+  font-weight: 600;
+}
+
+.solicitud-fecha::first-letter {
+  text-transform: uppercase;
+}
+
+.solicitud-precio {
+  font: 800 var(--t-xl) / 1.1 var(--f-cartel);
+}
+
+.ayuda-final {
+  font-size: var(--t-s);
+  color: var(--tinta-suave);
+}

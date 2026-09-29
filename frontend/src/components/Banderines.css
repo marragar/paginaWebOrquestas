@@ -1,0 +1,67 @@
+/* La cuerda se "tiende" de izquierda a derecha */
+.banderines .cuerda {
+  stroke-dasharray: 1600;
+  stroke-dashoffset: 1600;
+  animation: tender 0.9s ease-out forwards;
+}
+
+@keyframes tender {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Cada banderín cae desde la cuerda con un pequeño rebote y luego se balancea con el aire */
+.banderin {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  opacity: 0;
+  animation:
+    caer 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+    balancear var(--balanceo) ease-in-out infinite alternate;
+  animation-delay:
+    calc(0.5s + var(--i) * 35ms),
+    calc(1.4s + var(--i) * 35ms);
+}
+
+@keyframes caer {
+  from {
+    opacity: 0;
+    transform: rotate(-70deg) scaleY(0.2);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0) scaleY(1);
+  }
+}
+
+@keyframes balancear {
+  from { opacity: 1; transform: rotate(-7deg); }
+  to { opacity: 1; transform: rotate(7deg); }
+}
+
+/* Bombillas: se encienden en cadena y después parpadean cada una a su ritmo */
+.bombilla {
+  fill: var(--amarillo);
+  opacity: 0;
+  animation:
+    encender 0.3s ease-out forwards,
+    parpadear var(--parpadeo) ease-in-out infinite alternate;
+  animation-delay:
+    calc(1.2s + var(--i) * 30ms),
+    calc(1.6s + var(--i) * 30ms);
+}
+
+@keyframes encender {
+  to { opacity: 1; }
+}
+
+@keyframes parpadear {
+  0% { opacity: 1; }
+  70% { opacity: 0.85; }
+  100% { opacity: 0.3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banderines .cuerda { stroke-dashoffset: 0; }
+  .banderin,
+  .bombilla { opacity: 1; }
+}

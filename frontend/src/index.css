@@ -1,0 +1,601 @@
+/* Estilos globales: tokens de diseño, base y piezas compartidas (botones, formularios, tablas).
+   Los estilos propios de cada componente o página van en su propio .css. */
+
+/* ---------- Tokens ----------
+   Los colores con nombre de "cosa" (noche, rojo, amarillo...) son fijos.
+   Los semánticos (papel, superficie, tinta...) cambian con el modo oscuro. */
+
+:root {
+  /* Colores de marca: iguales en los dos modos */
+  --noche: #1f1d4e;        /* cielo de verbena: cabecera y portada */
+  --noche-2: #2c2a66;
+  --blanco: #ffffff;       /* blanco literal: texto sobre rojo o noche, banderines */
+  --rojo: #d7263d;         /* banderín rojo: acción principal, "reservada" */
+  --rojo-oscuro: #b01d31;
+  --amarillo: #ffc53d;     /* bombilla: "pendiente", acentos sobre la noche */
+  --verde: #13907f;        /* banderín verde: "libre", "aceptada" */
+  --verde-oscuro: #0e7568;
+  --whatsapp: #1a8f4c;
+
+  /* Colores semánticos: modo claro */
+  color-scheme: light;
+  --papel: #f6f6f9;        /* fondo de la app */
+  --superficie: #ffffff;   /* paneles, tarjetas, campos */
+  --tinta: #1a1838;        /* texto principal */
+  --tinta-suave: #4a4866;  /* texto secundario (contraste AA sobre papel y superficie) */
+  --linea: #d3d2e2;
+  --linea-fuerte: #8e8cab; /* bordes de campos: contraste 3:1 */
+  --verde-claro: #e3f4f1;
+  --amarillo-claro: #fff4d6;
+  --rojo-claro: #fbe5e8;
+  --gris-claro: #ecebf2;
+  --rayado: #d9d8e5;
+  --texto-libre: #0b6356;
+  --texto-pendiente: #7a4f00;
+  --texto-rechazo: #a51a2d;
+  --texto-apagado: #8d8ba6; /* días sin fecha en el calendario */
+  --seleccion-fondo: var(--noche);
+  --seleccion-texto: var(--blanco);
+
+  /* Tipografía */
+  --f-cartel: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+  --f-texto: 'Instrument Sans', system-ui, sans-serif;
+
+  /* Escala: base 17px (html al 106.25%), razón ~1.25 */
+  --t-xs: 0.85rem;
+  --t-s: 0.94rem;
+  --t-m: 1rem;
+  --t-l: 1.25rem;
+  --t-xl: 1.75rem;
+  --t-2xl: clamp(2.1rem, 5vw, 2.6rem);
+  --t-3xl: clamp(2.8rem, 8vw, 6.5rem);
+
+  --radio: 6px;
+  --ancho: 1120px;
+  --tactil: 48px;          /* alto mínimo de botones y campos */
+}
+
+/* Modo oscuro: sigue al sistema salvo que se elija "claro" en ajustes, o se fuerza con "oscuro" */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema='claro']) {
+    color-scheme: dark;
+    --papel: #121129;
+    --superficie: #1c1b3b;
+    --tinta: #eeedf8;
+    --tinta-suave: #b9b7d3;
+    --linea: #34325c;
+    --linea-fuerte: #6f6c99;
+    --verde-claro: #12383a;
+    --amarillo-claro: #3a3016;
+    --rojo-claro: #401a2a;
+    --gris-claro: #29284b;
+    --rayado: #353361;
+    --texto-libre: #6fd9c7;
+    --texto-pendiente: #ffd47a;
+    --texto-rechazo: #ff8f9d;
+    --texto-apagado: #6d6b92;
+    --seleccion-fondo: #4c48b0;
+    --seleccion-texto: var(--blanco);
+  }
+}
+
+:root[data-tema='oscuro'] {
+  color-scheme: dark;
+  --papel: #121129;
+  --superficie: #1c1b3b;
+  --tinta: #eeedf8;
+  --tinta-suave: #b9b7d3;
+  --linea: #34325c;
+  --linea-fuerte: #6f6c99;
+  --verde-claro: #12383a;
+  --amarillo-claro: #3a3016;
+  --rojo-claro: #401a2a;
+  --gris-claro: #29284b;
+  --rayado: #353361;
+  --texto-libre: #6fd9c7;
+  --texto-pendiente: #ffd47a;
+  --texto-rechazo: #ff8f9d;
+  --texto-apagado: #6d6b92;
+  --seleccion-fondo: #4c48b0;
+  --seleccion-texto: var(--blanco);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 106.25%; /* 17px si el navegador está en 16px; respeta el tamaño que elija cada persona */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--f-texto);
+  font-size: var(--t-m);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--f-cartel);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: 0.005em;
+  margin: 0 0 0.5em;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+h1 { font-size: var(--t-2xl); }
+h2 { font-size: var(--t-xl); }
+h3 { font-size: var(--t-l); }
+
+p {
+  margin: 0 0 1em;
+  max-width: 68ch;
+}
+
+a {
+  color: inherit;
+}
+
+/* Anillo de foco amarillo con halo oscuro: se ve igual sobre fondos claros y oscuros */
+:focus-visible {
+  outline: 3px solid var(--amarillo);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px var(--noche);
+  border-radius: 2px;
+}
+
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- Maquetación ---------- */
+
+.contenedor {
+  width: 100%;
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.pagina {
+  padding-top: 40px;
+  padding-bottom: 72px;
+}
+
+@media (max-width: 640px) {
+  .contenedor {
+    padding: 0 16px;
+  }
+
+  .pagina {
+    padding-top: 24px;
+    padding-bottom: 48px;
+  }
+
+  .panel {
+    padding: 18px;
+  }
+}
+
+.pagina-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.pagina-cabecera h1 {
+  margin: 0;
+}
+
+.pagina-cabecera p {
+  margin: 6px 0 0;
+  color: var(--tinta-suave);
+}
+
+.texto-suave {
+  color: var(--tinta-suave);
+}
+
+.panel {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 24px;
+}
+
+/* ---------- Botones ---------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--tactil);
+  padding: 0 20px;
+  border: 2px solid transparent;
+  border-radius: var(--radio);
+  font: 600 var(--t-m) / 1.15 var(--f-texto);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  background: var(--rojo);
+  color: var(--blanco);
+  transition: background-color 0.15s;
+}
+
+.boton:hover {
+  background: var(--rojo-oscuro);
+}
+
+.boton--secundario {
+  background: transparent;
+  color: var(--tinta);
+  border-color: var(--tinta);
+}
+
+.boton--secundario:hover {
+  background: var(--tinta);
+  color: var(--blanco);
+}
+
+.boton--discreto {
+  background: transparent;
+  color: var(--tinta-suave);
+  padding: 0 12px;
+}
+
+.boton--discreto:hover {
+  background: var(--gris-claro);
+  color: var(--tinta);
+}
+
+.boton--verde {
+  background: var(--verde);
+}
+
+.boton--verde:hover {
+  background: var(--verde-oscuro);
+}
+
+/* Más compacto en escritorio, pero nunca por debajo de 44px de alto para poder pulsarlo */
+.boton--pequeno {
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: var(--t-s);
+}
+
+.boton--whatsapp {
+  background: var(--whatsapp);
+}
+
+.boton--whatsapp:hover {
+  background: #146f3b;
+}
+
+.boton-icono {
+  width: 1.15em;
+  height: 1.15em;
+  flex-shrink: 0;
+}
+
+.boton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- Formularios ---------- */
+
+.formulario {
+  display: grid;
+  gap: 18px;
+}
+
+.formulario--dos {
+  grid-template-columns: 1fr 1fr;
+}
+
+.formulario--dos .campo--ancho {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 640px) {
+  .formulario--dos {
+    grid-template-columns: 1fr;
+  }
+}
+
+.campo {
+  display: grid;
+  gap: 6px;
+}
+
+.campo label {
+  font-weight: 600;
+  font-size: var(--t-m);
+}
+
+.campo .ayuda {
+  font-size: var(--t-xs);
+  color: var(--tinta-suave);
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  min-height: var(--tactil);
+  padding: 10px 12px;
+  border: 1.5px solid var(--linea-fuerte);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  color: var(--tinta);
+  font: inherit;
+}
+
+.campo textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  outline: none;
+  border-color: var(--seleccion-fondo);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--seleccion-fondo) 25%, transparent);
+}
+
+/* ---------- Tablas ---------- */
+
+.tabla-envoltorio {
+  overflow-x: auto;
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-s);
+}
+
+.tabla th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--tinta-suave);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--linea);
+  white-space: nowrap;
+}
+
+.tabla td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--linea);
+  vertical-align: middle;
+}
+
+.tabla tr:last-child td {
+  border-bottom: 0;
+}
+
+.tabla .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* En pantallas estrechas cada fila de la tabla se convierte en una ficha con etiquetas */
+@media (max-width: 720px) {
+  .tabla--apilable thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .tabla--apilable tr {
+    display: block;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .tabla--apilable tr:last-child {
+    border-bottom: 0;
+  }
+
+  .tabla--apilable td {
+    display: grid;
+    grid-template-columns: 8.5em 1fr;
+    gap: 12px;
+    padding: 4px 0;
+    border: 0;
+    text-align: left;
+  }
+
+  .tabla--apilable td > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .tabla--apilable td::before {
+    content: attr(data-etiqueta);
+    color: var(--tinta-suave);
+  }
+
+  .tabla--apilable td.num {
+    text-align: left;
+  }
+}
+
+/* ---------- Filtros en forma de pastilla ---------- */
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.filtro {
+  border: 1.5px solid var(--linea);
+  background: var(--superficie);
+  color: var(--tinta);
+  border-radius: 999px;
+  min-height: 44px;
+  padding: 6px 16px;
+  font: 500 var(--t-s) / 1.2 var(--f-texto);
+  cursor: pointer;
+}
+
+.filtro[aria-pressed='true'] {
+  background: var(--seleccion-fondo);
+  border-color: var(--seleccion-fondo);
+  color: var(--seleccion-texto);
+}
+
+.filtro .cuenta {
+  opacity: 0.7;
+  margin-left: 6px;
+}
+
+/* ---------- Barra de acción fija (solo móvil y tablet vertical) ---------- */
+
+.barra-accion {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .barra-accion {
+    position: fixed;
+    z-index: 20;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: var(--superficie);
+    border-top: 1px solid var(--linea);
+    box-shadow: 0 -6px 20px rgba(18, 17, 41, 0.12);
+  }
+
+  .barra-accion-texto {
+    flex: 1;
+    min-width: 0;
+    font-size: var(--t-s);
+    line-height: 1.3;
+  }
+
+  .barra-accion-texto strong {
+    display: block;
+    font-size: var(--t-m);
+  }
+
+  .barra-accion-texto strong::first-letter {
+    text-transform: uppercase;
+  }
+
+  /* hueco para que la barra no tape el final de la página */
+  .con-barra-accion {
+    padding-bottom: 110px;
+  }
+}
+
+/* ---------- Vacío ---------- */
+
+.vacio {
+  text-align: center;
+  padding: 48px 20px;
+  border: 1.5px dashed var(--linea);
+  border-radius: var(--radio);
+  color: var(--tinta-suave);
+}
+
+.vacio p {
+  margin: 0 auto 16px;
+}
+
+/* ---------- Aviso ---------- */
+
+.aviso {
+  margin: 0 0 24px;
+  padding: 12px 14px;
+  border-left: 4px solid var(--amarillo);
+  background: var(--amarillo-claro);
+  font-size: var(--t-s);
+  max-width: none;
+}
+
+.formulario .aviso {
+  margin: 0;
+}
+
+.aviso--hecho {
+  border-left-color: var(--verde);
+  background: var(--verde-claro);
+}
+
+/* Pie siempre abajo aunque la página sea corta */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app > main {
+  flex: 1;
+}
+
+.boton:active {
+  transform: translateY(1px);
+}
+
+.pagina--estrecha {
+  max-width: 800px;
+}
+
+.acciones--centradas {
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .formulario > .boton,
+  .formulario .acciones > .boton {
+    width: 100%;
+  }
+}

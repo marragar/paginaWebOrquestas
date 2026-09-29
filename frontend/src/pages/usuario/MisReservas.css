@@ -1,0 +1,113 @@
+/* Estas clases también las usan las pantallas de solicitudes (orquesta) */
+
+.reservas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.reserva {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 20px;
+  align-items: start;
+  padding: 20px;
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-left: 5px solid var(--linea);
+  border-radius: var(--radio);
+}
+
+.reserva--pendiente { border-left-color: var(--amarillo); }
+.reserva--aceptada { border-left-color: var(--verde); }
+.reserva--rechazada { border-left-color: var(--rojo); }
+
+.reserva--cancelada,
+.reserva--rechazada {
+  background: transparent;
+}
+
+.reserva--cancelada .taco,
+.reserva--rechazada .taco {
+  opacity: 0.55;
+}
+
+.reserva-titulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 8px;
+}
+
+.reserva-titulo h2 {
+  font-size: var(--t-xl);
+  margin: 0;
+}
+
+.reserva-titulo h2 a {
+  text-decoration: none;
+}
+
+.reserva-titulo h2 a:hover {
+  color: var(--rojo);
+}
+
+.reserva-mensaje {
+  margin: 12px 0 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--linea);
+  font-style: italic;
+  color: var(--tinta-suave);
+}
+
+.reserva-pie {
+  margin: 10px 0 0;
+  font-size: var(--t-s);
+  color: var(--tinta-suave);
+}
+
+.reserva-acciones {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 140px;
+}
+
+.confirmar {
+  max-width: 260px;
+  font-size: var(--t-s);
+}
+
+.confirmar p {
+  margin: 0 0 8px;
+}
+
+@media (max-width: 640px) {
+  .reserva {
+    grid-template-columns: auto 1fr;
+    gap: 14px 16px;
+    padding: 16px;
+  }
+
+  .reserva-acciones {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .reserva-acciones > .boton {
+    flex: 1;
+  }
+
+  .reserva-titulo h2 {
+    font-size: var(--t-l);
+  }
+
+  .confirmar {
+    max-width: none;
+  }
+}

@@ -1,0 +1,51 @@
+.dias-solicitados {
+  display: grid;
+  gap: 40px;
+}
+
+.dia-solicitado-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.dia-solicitado-cabecera h2 {
+  margin: 0;
+}
+
+.dia-solicitado-cabecera h2::first-letter {
+  text-transform: uppercase;
+}
+
+.dia-solicitado-cabecera p {
+  margin: 4px 0 0;
+}
+
+/* Sin taco en cada fila: ya está en la cabecera del día */
+.solicitud-fila {
+  grid-template-columns: 1fr auto;
+}
+
+.solicitud-fila h3 {
+  margin: 0;
+  font-size: var(--t-xl);
+}
+
+@media (max-width: 640px) {
+  .solicitud-fila {
+    grid-template-columns: 1fr;
+  }
+
+  .solicitud-fila h3 {
+    font-size: var(--t-l);
+  }
+
+  .dia-solicitado-cabecera {
+    align-items: flex-start;
+  }
+
+  .dia-solicitado-cabecera h2 {
+    font-size: var(--t-l);
+  }
+}

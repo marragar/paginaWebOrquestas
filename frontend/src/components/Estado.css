@@ -1,0 +1,43 @@
+.estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.estado::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.estado--pendiente,
+.estado--sin_verificar {
+  background: var(--amarillo-claro);
+  color: var(--texto-pendiente);
+}
+
+.estado--aceptada,
+.estado--libre,
+.estado--verificada {
+  background: var(--verde-claro);
+  color: var(--texto-libre);
+}
+
+.estado--rechazada,
+.estado--reservada {
+  background: var(--rojo-claro);
+  color: var(--texto-rechazo);
+}
+
+.estado--cancelada,
+.estado--bloqueada {
+  background: var(--gris-claro);
+  color: var(--tinta-suave);
+}

@@ -1,0 +1,40 @@
+.confeti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  animation: aparecer-confeti 1.5s ease-out 1.8s forwards;
+}
+
+@keyframes aparecer-confeti {
+  to { opacity: 0.55; }
+}
+
+.papelillo {
+  position: absolute;
+  top: -20px;
+  border-radius: 1px;
+  animation-name: caer-papelillo;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.papelillo--redondo {
+  border-radius: 50%;
+}
+
+@keyframes caer-papelillo {
+  from {
+    transform: translate(0, 0) rotate(0);
+  }
+  to {
+    transform: translate(var(--deriva), 110vh) rotate(var(--giro));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confeti {
+    display: none;
+  }
+}

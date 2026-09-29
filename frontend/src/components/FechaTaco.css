@@ -1,0 +1,47 @@
+.taco {
+  display: inline-grid;
+  grid-template-rows: auto 1fr auto;
+  width: 64px;
+  flex-shrink: 0;
+  text-align: center;
+  background: var(--superficie);
+  border: 1.5px solid var(--tinta);
+  border-radius: 4px;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.taco-mes {
+  background: var(--rojo);
+  color: var(--blanco);
+  font: 600 var(--t-xs) / 1 var(--f-texto);
+  padding: 4px 0;
+}
+
+.taco-dia {
+  font: 900 2rem / 1 var(--f-cartel);
+  padding: 4px 0 0;
+}
+
+.taco-semana {
+  font-size: 0.7rem;
+  color: var(--tinta-suave);
+  padding: 2px 0 5px;
+}
+
+.taco--pequeno {
+  width: 48px;
+}
+
+.taco--pequeno .taco-mes {
+  font-size: 0.68rem;
+  padding: 3px 0;
+}
+
+.taco--pequeno .taco-dia {
+  font-size: 1.45rem;
+}
+
+.taco--pequeno .taco-semana {
+  font-size: 0.62rem;
+}

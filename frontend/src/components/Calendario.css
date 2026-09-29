@@ -1,0 +1,169 @@
+.calendario {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 16px;
+}
+
+.cal-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.cal-cabecera .boton {
+  font-size: 1.5rem;
+  min-height: 38px;
+}
+
+.cal-titulo {
+  margin: 0;
+  font-size: var(--t-xl);
+}
+
+.cal-titulo {
+  text-align: center;
+}
+
+.cal-titulo::first-letter {
+  text-transform: uppercase;
+}
+
+.cal-rejilla {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+/* En móvil el calendario ocupa todo el ancho y los días no son cuadrados, para que quepa */
+@media (max-width: 480px) {
+  .calendario {
+    padding: 12px 8px;
+    margin: 0 -8px;
+  }
+
+  .cal-rejilla {
+    gap: 3px;
+  }
+
+  .cal-dia {
+    aspect-ratio: auto;
+    min-height: 46px;
+  }
+
+  .cal-titulo {
+    font-size: var(--t-l);
+  }
+}
+
+.cal-semana {
+  text-align: center;
+  text-decoration: none;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  color: var(--tinta-suave);
+  padding-bottom: 4px;
+}
+
+.cal-dia {
+  position: relative;
+  aspect-ratio: 1;
+  min-height: 44px;
+  border: 1.5px solid transparent;
+  border-radius: 4px;
+  background: var(--papel);
+  color: var(--tinta);
+  font: 700 1.15rem / 1 var(--f-cartel);
+  cursor: pointer;
+  padding: 0;
+}
+
+.cal-dia:disabled {
+  cursor: default;
+}
+
+/* Día sin fecha publicada que no se puede pulsar (vista pública) */
+.cal-dia--vacio:disabled {
+  background: transparent;
+  color: var(--texto-apagado);
+  font-weight: 600;
+}
+
+.cal-dia--libre {
+  background: var(--verde-claro);
+  border-color: var(--verde);
+  color: var(--texto-libre);
+}
+
+.cal-dia--reservada {
+  background: var(--rojo);
+  color: var(--blanco);
+}
+
+.cal-dia--bloqueada {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--gris-claro) 0 5px,
+    var(--rayado) 5px 10px
+  );
+  color: var(--tinta-suave);
+}
+
+.cal-dia--pasado {
+  opacity: 0.35;
+}
+
+.cal-dia--hoy .cal-numero {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.cal-dia:not(:disabled):hover {
+  border-color: var(--seleccion-fondo);
+}
+
+.cal-dia--seleccionada,
+.cal-dia--seleccionada:not(:disabled):hover {
+  background: var(--seleccion-fondo);
+  border-color: var(--seleccion-fondo);
+  color: var(--amarillo);
+}
+
+.cal-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  font-size: var(--t-xs);
+  color: var(--tinta-suave);
+}
+
+.cal-leyenda li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.muestra {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1.5px solid transparent;
+}
+
+.muestra--libre {
+  background: var(--verde-claro);
+  border-color: var(--verde);
+}
+
+.muestra--reservada {
+  background: var(--rojo);
+}
+
+.muestra--bloqueada {
+  background: repeating-linear-gradient(-45deg, var(--gris-claro) 0 3px, var(--rayado) 3px 6px);
+}

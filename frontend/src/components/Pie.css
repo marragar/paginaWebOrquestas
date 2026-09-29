@@ -1,0 +1,44 @@
+.pie {
+  border-top: 1px solid var(--linea);
+  padding: 24px 0;
+  font-size: var(--t-s);
+  color: var(--tinta-suave);
+}
+
+.pie-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pie-texto {
+  margin: 0;
+}
+
+.pie-maqueta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px 6px 12px;
+  border: 1.5px dashed var(--linea);
+  border-radius: 999px;
+}
+
+.pie-maqueta .filtro {
+  padding: 4px 10px;
+  font-size: var(--t-xs);
+}
+
+@media (max-width: 640px) {
+  .pie-maqueta {
+    border-radius: var(--radio);
+    padding: 10px 12px;
+  }
+
+  .pie-maqueta > span {
+    flex-basis: 100%;
+  }
+}

@@ -1,0 +1,433 @@
+/* ---------- Portada: la noche de verbena ---------- */
+
+.portada {
+  position: relative;
+  background:
+    radial-gradient(ellipse 60% 70% at 85% 110%, rgba(255, 197, 61, 0.16), transparent 70%),
+    var(--noche);
+  color: var(--blanco);
+  overflow: hidden;
+}
+
+.portada-banderines {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 72px;
+}
+
+.portada-contenido {
+  position: relative;
+  padding-top: 32px;
+  padding-bottom: 64px;
+}
+
+.portada-titulo {
+  font-size: var(--t-3xl);
+  font-weight: 900;
+  line-height: 0.92;
+  max-width: 11ch;
+  margin-bottom: 24px;
+  color: var(--amarillo);
+  text-wrap: balance;
+}
+
+.portada-texto {
+  font-size: var(--t-l);
+  max-width: 44ch;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 36px;
+}
+
+.buscador {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+  max-width: 760px;
+  padding: 16px;
+  background: var(--superficie);
+  color: var(--tinta);
+  border-radius: var(--radio);
+}
+
+.buscador-boton {
+  min-height: 44px;
+}
+
+@media (max-width: 640px) {
+  .buscador {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Bloques de la página ---------- */
+
+.inicio-bloque {
+  padding-top: 64px;
+}
+
+.inicio-bloque:last-child {
+  padding-bottom: 80px;
+}
+
+/* Lista de fechas como el programa de fiestas: una línea por actuación */
+.programa {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  border-top: 2px solid var(--tinta);
+}
+
+.programa-fila {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--linea);
+  text-decoration: none;
+}
+
+.programa-fila:hover .programa-nombre {
+  color: var(--rojo);
+}
+
+.programa-nombre {
+  font: 800 var(--t-xl) / 1 var(--f-cartel);
+}
+
+.programa-dato {
+  color: var(--tinta-suave);
+  font-size: var(--t-s);
+}
+
+.programa-precio {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 90px;
+  text-align: right;
+}
+
+@media (max-width: 720px) {
+  .programa-fila {
+    grid-template-columns: auto 1fr;
+    gap: 4px 16px;
+  }
+
+  .programa-fila .taco {
+    grid-row: span 4;
+    align-self: start;
+  }
+
+  .programa-precio {
+    text-align: left;
+  }
+}
+
+/* Pasos: es una secuencia real, por eso van numerados */
+.pasos {
+  list-style: none;
+  counter-reset: paso;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+}
+
+.paso {
+  counter-increment: paso;
+}
+
+.paso::before {
+  content: counter(paso);
+  display: block;
+  font: 900 4rem / 1 var(--f-cartel);
+  color: var(--rojo);
+  margin-bottom: 8px;
+}
+
+.paso p {
+  color: var(--tinta-suave);
+}
+
+@media (max-width: 720px) {
+  .pasos {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.para-orquestas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 32px;
+  border: 2px solid var(--tinta);
+  border-radius: var(--radio);
+  background: var(--superficie);
+}
+
+.para-orquestas p {
+  margin: 0;
+  color: var(--tinta-suave);
+}
+
+/* =========================================================
+   Animaciones de la portada y del resto del inicio.
+   Los estados ocultos solo se aplican si el sistema permite
+   movimiento: con "reducir movimiento" todo se ve estático.
+   ========================================================= */
+
+/* Focos del escenario barriendo el cielo */
+.focos {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.foco {
+  position: absolute;
+  bottom: -20%;
+  width: 340px;
+  height: 150%;
+  background: linear-gradient(to top, rgba(255, 197, 61, 0.28), rgba(255, 197, 61, 0) 85%);
+  clip-path: polygon(46% 100%, 54% 100%, 100% 0, 0 0);
+  transform-origin: 50% 100%;
+  mix-blend-mode: screen;
+}
+
+.foco--1 {
+  right: 8%;
+  animation: barrer 9s ease-in-out infinite alternate;
+}
+
+.foco--2 {
+  right: 26%;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 80%);
+  animation: barrer 12s ease-in-out -4s infinite alternate-reverse;
+}
+
+@keyframes barrer {
+  from { transform: rotate(-28deg); }
+  to { transform: rotate(22deg); }
+}
+
+.titulo-linea {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em; /* que no corte los descendentes (q, p) */
+}
+
+.titulo-linea > span {
+  display: block;
+}
+
+.paso::before {
+  width: fit-content;
+  padding-right: 14px;
+  background: var(--papel); /* tapa la línea discontinua que une los pasos */
+  transform-origin: 50% 90%;
+}
+
+.luces {
+  position: absolute;
+  top: -6px;
+  left: 28px;
+  right: 28px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.luces span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--amarillo);
+  border: 2px solid var(--papel);
+}
+
+.para-orquestas {
+  position: relative;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Titular: cada línea sube desde detrás de una máscara */
+  .titulo-linea > span {
+    transform: translateY(105%);
+    animation: subir-linea 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation-delay: calc(0.25s + var(--i) * 0.12s);
+  }
+
+  .portada-texto,
+  .buscador {
+    opacity: 0;
+    animation: aparecer 0.7s ease-out forwards;
+  }
+
+  .portada-texto { animation-delay: 0.85s; }
+  .buscador { animation-delay: 1.05s; }
+
+  .focos {
+    opacity: 0;
+    animation: aparecer-suave 2s ease-out 1.2s forwards;
+  }
+
+  /* ---- Bloques que se revelan al hacer scroll ---- */
+  .revelar h2 {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .revelar--visible h2 {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Programa: cada fila entra desde la izquierda y su taco "se da la vuelta" */
+  .revelar .programa {
+    border-top-color: transparent;
+    background: linear-gradient(var(--tinta), var(--tinta)) top left / 0% 2px no-repeat;
+    transition: background-size 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .revelar--visible .programa {
+    background-size: 100% 2px;
+  }
+
+  .revelar .programa li {
+    opacity: 0;
+    transform: translateX(-28px);
+    transition:
+      opacity 0.5s ease-out,
+      transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition-delay: calc(0.15s + var(--i) * 90ms);
+  }
+
+  .revelar--visible .programa li {
+    opacity: 1;
+    transform: none;
+  }
+
+  .revelar .programa .taco {
+    transform: perspective(300px) rotateX(-95deg);
+    transform-origin: 50% 0;
+    transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition-delay: calc(0.3s + var(--i) * 90ms);
+  }
+
+  .revelar--visible .programa .taco {
+    transform: none;
+  }
+
+  /* Al pasar por encima, la hoja del taco se ladea como si fueras a arrancarla */
+  .revelar--visible .programa-fila:hover .taco {
+    transform: rotate(-6deg) translateY(-2px);
+    transition-delay: 0s;
+    transition-duration: 0.25s;
+  }
+
+  .programa-fila .programa-precio {
+    transition: transform 0.25s;
+  }
+
+  .programa-fila:hover .programa-precio {
+    transform: scale(1.12);
+  }
+
+  /* Pasos: el número salta y una línea los va uniendo */
+  .pasos {
+    position: relative;
+  }
+
+  .revelar .paso {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.5s, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition-delay: calc(0.2s + var(--i) * 0.35s);
+  }
+
+  .revelar .paso::before {
+    transform: scale(0.3) rotate(-12deg);
+    transition: transform 0.6s cubic-bezier(0.34, 1.8, 0.64, 1);
+    transition-delay: calc(0.3s + var(--i) * 0.35s);
+  }
+
+  .revelar--visible .paso {
+    opacity: 1;
+    transform: none;
+  }
+
+  .revelar--visible .paso::before {
+    transform: none;
+  }
+
+  /* ---- Guirnalda de luces del bloque para orquestas ---- */
+  .revelar .para-orquestas {
+    opacity: 0;
+    transform: scale(0.96);
+    transition: opacity 0.6s, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .revelar--visible .para-orquestas {
+    opacity: 1;
+    transform: none;
+  }
+
+  .revelar--visible .luces span {
+    animation: persecucion 2.4s linear infinite;
+    animation-delay: calc(var(--i) * 0.1s);
+  }
+
+  .revelar .para-orquestas .boton {
+    transition: background-color 0.15s, transform 0.2s;
+  }
+
+  .revelar .para-orquestas .boton:hover {
+    transform: scale(1.05) rotate(-1deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 721px) {
+  .pasos::after {
+    content: '';
+    position: absolute;
+    top: 2rem;
+    left: 40px;
+    right: 33%;
+    border-top: 2px dashed var(--linea);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 1.2s ease-in-out 0.4s;
+    z-index: -1;
+  }
+
+  .revelar--visible .pasos::after {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes subir-linea {
+  to { transform: translateY(0); }
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes aparecer-suave {
+  to { opacity: 1; }
+}
+
+@keyframes persecucion {
+  0%, 100% { opacity: 0.45; box-shadow: none; }
+  8% { opacity: 1; box-shadow: 0 0 10px 3px rgba(255, 197, 61, 0.8); }
+  24% { opacity: 0.45; box-shadow: none; }
+}
