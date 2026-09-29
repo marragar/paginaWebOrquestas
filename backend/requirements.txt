@@ -10,4 +10,4 @@ pyjwt
 
 # tests
 pytest
-httpx
+httpx2

@@ -1,25 +1,28 @@
-# TODO: modelo "Disponibilidad" (tabla "disponibilidades") y enum EstadoDisponibilidad — ver SPEC §3.
-# Recuerda la restricción única (orquesta_id, fecha) -> UniqueConstraint en __table_args__.
+# TODO (revisión frente a SPEC §3):
+#   - El import de TYPE_CHECKING debe ser "from app.models.orquesta import ...", sin "backend.".
 
 import enum
-from datetime import datetime
+from datetime import date
 from decimal import Decimal
 
-from sqlalchemy import Date, Enum, ForeignKey, Numeric, String, UniqueConstraint, func
+from sqlalchemy import Date, Enum, ForeignKey, Numeric, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 from typing import TYPE_CHECKING
 
 
+
 if TYPE_CHECKING:
     from backend.app.models.orquesta import Orquesta
+    from backend.app.models.reserva import Reserva
+
 
 
 class EstadoDisponibilidad(str, enum.Enum):
-    DISPONIBLE = "disponible"
-    RESERVADO = "reservado"
-    NO_DISPONIBLE = "no_disponible"
+    LIBRE = "libre"
+    RESERVADA = "reservada"
+    BLOQUEADA = "bloqueada"
     
     
 class Disponibilidad(Base):
@@ -33,11 +36,12 @@ class Disponibilidad(Base):
     
     id: Mapped[int] = mapped_column(primary_key=True)
     orquesta_id: Mapped[int] = mapped_column(ForeignKey("orquestas.id", ondelete="CASCADE"))
-    fecha: Mapped[datetime] = mapped_column(Date)
+    fecha: Mapped[date] = mapped_column(Date)
     estado: Mapped[EstadoDisponibilidad] = mapped_column(
         Enum(EstadoDisponibilidad, name="estado_disponibilidad", values_callable=lambda e: [m.value for m in e]),
-        default=EstadoDisponibilidad.DISPONIBLE
+        default=EstadoDisponibilidad.LIBRE
     )
     precio: Mapped[Decimal] = mapped_column(Numeric(10,2))
     notas: Mapped[str | None] = mapped_column(String(255))
     orquesta: Mapped["Orquesta"] = relationship("Orquesta", back_populates="disponibilidades")
+    reservas: Mapped[list["Reserva"]] = relationship(back_populates="disponibilidad")

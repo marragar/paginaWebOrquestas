@@ -20,6 +20,10 @@ class TipoUsuario(str, enum.Enum):
     PARTICULAR = "particular"
 
 
+# TODO (revisión frente al frontend):
+#   - El import de TYPE_CHECKING debe ser "from app.models.reserva import ...", sin "backend.".
+
+
 class Usuario(Base):
     """Modelo de ejemplo (SPEC §3 usuarios). Úsalo como referencia para el resto."""
 
@@ -38,7 +42,7 @@ class Usuario(Base):
     cif: Mapped[str | None] = mapped_column(String(20))
     municipio: Mapped[str | None] = mapped_column(String(255))
     provincia: Mapped[str | None] = mapped_column(String(100))
-    telefono: Mapped[str | None] = mapped_column(String(9))
+    telefono: Mapped[str | None] = mapped_column(String(20))
     es_admin: Mapped[bool] = mapped_column(default=False)
     creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True),server_default=func.now())
 

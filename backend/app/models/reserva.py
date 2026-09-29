@@ -1,12 +1,13 @@
-# TODO: modelo "Reserva" (tabla "reservas") y enum EstadoReserva — ver SPEC §3.
-# Regla §4.5: como mucho una reserva aceptada por disponibilidad, garantizado en BD.
-# Pista: índice único parcial sobre disponibilidad_id WHERE estado = 'aceptada'
-#        (Index(..., unique=True, postgresql_where=...)).
+# TODO (revisión frente a SPEC §3):
+#   - Los imports de TYPE_CHECKING deben ser "from app.models....", sin "backend.".
+
+# Regla §4.5: como mucho una reserva aceptada por disponibilidad, garantizado en BD con un
+# índice único parcial sobre disponibilidad_id WHERE estado = 'aceptada'.
 
 import enum
 from datetime import datetime, time
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Index, String, Time, func, text
+from sqlalchemy import DateTime, Enum, ForeignKey, Index, String, Text, Time, func, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -22,6 +23,7 @@ class EstadoReserva(str, enum.Enum):
     PENDIENTE = "pendiente"
     ACEPTADA = "aceptada"
     RECHAZADA = "rechazada"
+    CANCELADA = "cancelada"
 
 
 class Reserva(Base):
@@ -48,8 +50,9 @@ class Reserva(Base):
         ),
         default=EstadoReserva.PENDIENTE,
     )
-    hora_inicio: Mapped[time] = mapped_column(Time)
-    notas: Mapped[str | None] = mapped_column(String(255))
+    lugar: Mapped[str | None] = mapped_column(String(255))
+    hora_inicio: Mapped[time | None] = mapped_column(Time)
+    mensaje: Mapped[str | None] = mapped_column(Text)
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )

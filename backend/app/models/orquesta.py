@@ -1,5 +1,9 @@
 # CORRECCIÓN: quitado el comentario TODO del principio (el modelo ya está hecho).
 
+# TODO (revisión frente a SPEC §3 y el frontend):
+#   1. "tipo" (directo/playback) no está en el SPEC ni en el frontend: decisión abierta en SPEC §9.
+#   2. El import de TYPE_CHECKING debe ser "from app.models.disponibilidad import ...", sin "backend.".
+
 # CORRECCIÓN: imports agrupados (primero librería estándar, luego librerías externas)
 import enum
 from datetime import datetime
