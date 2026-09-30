@@ -71,7 +71,7 @@ Los días que cada orquesta ofrece. Una fila por orquesta y día.
 | id | int PK | autoincremental |
 | orquesta_id | FK orquestas | obligatorio |
 | fecha | date | obligatorio |
-| estado | enum | `libre`, `reservada`, `bloqueada` |
+| estado | enum | `libre`, `reservada`, `bloqueada`, `retirada` (borrado lógico, §4.9) |
 | precio | decimal | obligatorio |
 | notas | text | opcional |
 
@@ -116,9 +116,16 @@ Solicitudes de un usuario sobre una disponibilidad.
 7. Si el usuario **cancela** una reserva `aceptada`, la disponibilidad vuelve a `libre`.
    Cancelar una `pendiente` no cambia la disponibilidad.
 8. La orquesta puede marcar un día como `bloqueada` (no disponible, sin reservas). Un día
-   bloqueado no se puede solicitar.
-9. La orquesta **no puede borrar** una disponibilidad con reserva `aceptada`.
-   (Si tiene pendientes: ver decisiones abiertas.)
+   bloqueado no se puede solicitar. Al bloquear un día `libre`, sus reservas `pendiente` pasan a
+   `rechazada` en la misma transacción (igual que al retirar, §4.9): si no, quedarían esperando
+   en un día que ya no se puede aceptar. Desbloquear no las recupera.
+9. Las fechas **no se borran de la BD: se retiran** (borrado lógico). Retirar pasa la
+   disponibilidad a `retirada`, así sus reservas conservan la fecha y el organizador las sigue
+   viendo en «Mis reservas». Al retirar:
+   - si la fecha está `reservada` (tiene una reserva `aceptada`) → 409 `fecha_con_reserva`;
+   - sus reservas `pendiente` pasan a `rechazada`;
+   - una fecha `retirada` no aparece en ningún listado (tampoco en el calendario de la orquesta)
+     y no se puede modificar: para la orquesta es como si no existiera (404 `no_encontrado`).
 10. Las orquestas no verificadas no aparecen en búsquedas.
 11. Un email no puede existir a la vez en `usuarios` y `orquestas`.
 12. 🆕 Bloquear un día que no tiene disponibilidad crea la fila directamente con estado
@@ -127,6 +134,10 @@ Solicitudes de un usuario sobre una disponibilidad.
     `/mi-orquesta/disponibilidad`) se hacen en **una sola transacción**: si una fecha falla, no se
     aplica ninguna y el error indica cuál (`fecha` o `id` en el `detail`).
 14. 🆕 No se puede bloquear una fecha `reservada` (mismo error que §4.9: `fecha_con_reserva`).
+15. 🆕 Publicar o bloquear un día que tiene una fila `retirada` **reutiliza esa fila** (pasa a
+    `libre` o `bloqueada` con el precio nuevo) en vez de crear otra: la restricción única
+    `(orquesta_id, fecha)` sigue contando las retiradas. Por eso `fecha_duplicada` solo salta si
+    la fila existente no está `retirada`.
 
 ## 5. API (borrador)
 
@@ -153,16 +164,17 @@ frontend (ver §5.2 y §6).
 
 **Zona orquesta** (cuenta orquesta)
 - `GET/PUT /mi-orquesta` — ver/editar perfil (el email no se puede cambiar)
-- `GET /mi-orquesta/disponibilidad` — todas sus fechas con estado
+- `GET /mi-orquesta/disponibilidad` — todas sus fechas con estado, menos las `retirada`
 - `POST /mi-orquesta/disponibilidad` ✏️ — añadir **una o varias** fechas de golpe, con `estado`
   `libre` o `bloqueada` y su `precio` (el panel permite marcar varios días y publicarlos o
   bloquearlos a la vez)
 - `PATCH /mi-orquesta/disponibilidad/{id}` — cambiar precio, notas o bloquear/desbloquear
 - 🆕 `PATCH /mi-orquesta/disponibilidad` — lo mismo para **varias** fechas a la vez
   (`{ "ids": [...], "estado"?: ..., "precio"?: ... }`). Se aplica todo o nada
-- `DELETE /mi-orquesta/disponibilidad/{id}` — retirar fecha (regla §4.9)
+- `DELETE /mi-orquesta/disponibilidad/{id}` — retirar fecha (regla §4.9: no borra la fila, la
+  pasa a `retirada`)
 - 🆕 `DELETE /mi-orquesta/disponibilidad?ids=1,2,3` — retirar varias. Todo o nada: si alguna tiene
-  reserva aceptada, no se borra ninguna y se devuelve el error `fecha_con_reserva`
+  reserva aceptada, no se retira ninguna y se devuelve el error `fecha_con_reserva`
 - `GET /mi-orquesta/reservas` ✏️ — solicitudes recibidas. Filtro opcional `estado`
   (`?estado=pendiente` sirve para el aviso con el número de solicitudes sin responder). Cada
   solicitud incluye los datos del organizador que pide (nombre, tipo, municipio, provincia,
@@ -231,7 +243,7 @@ lo usa).
 **Nunca se devuelve `password_hash`.** Tampoco el email de los organizadores en rutas públicas.
 
 **Validaciones mínimas** (las mismas que avisa el frontend):
-- `password`: mínimo 8 caracteres.
+- `password`: mínimo 8 caracteres y máximo 72 bytes (límite de bcrypt; una «ñ» ocupa 2).
 - `email`: formato válido (`EmailStr`).
 - `telefono`: hasta 20 caracteres (el frontend genera el enlace `tel:` quitando espacios).
 
@@ -319,7 +331,10 @@ El aviso con el número de solicitudes sin responder (cabecera de la orquesta) u
 - [x] ¿La reserva requiere aceptación de la orquesta? → Sí.
 - [x] ¿El usuario tiene que ser validado por el admin? → No, solo las orquestas.
 - [ ] ¿Las solicitudes pendientes caducan si la orquesta no responde en X días?
-- [ ] ¿Qué pasa con las reservas pendientes si la orquesta borra o bloquea la fecha? (¿se rechazan automáticamente o se impide la acción?)
+- [x] ¿Qué pasa con las reservas pendientes si la orquesta borra la fecha? → No se borra: se
+  retira (borrado lógico) y las pendientes pasan a `rechazada` (§4.9).
+- [x] ¿Y si la orquesta **bloquea** una fecha con reservas pendientes? → Se rechazan
+  automáticamente, como al retirar (§4.8).
 - [ ] ¿El usuario puede cancelar una reserva aceptada en cualquier momento o hay un plazo?
 - [ ] El modelo `Orquesta` tiene un campo `tipo` (`orquesta_directo` / `orquesta_playback`) que no
   está en §3 ni en el frontend. ¿Se mantiene? Si se mantiene, hay que añadirlo a §3, al registro

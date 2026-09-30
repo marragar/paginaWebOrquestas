@@ -55,6 +55,7 @@ export default {
     libre: 'Libre',
     reservada: 'Reservada',
     bloqueada: 'Bloqueada',
+    retirada: 'Retirada',
     verificada: 'Verificada',
     sin_verificar: 'Sen verificar',
   },

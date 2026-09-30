@@ -23,6 +23,9 @@ class EstadoDisponibilidad(str, enum.Enum):
     LIBRE = "libre"
     RESERVADA = "reservada"
     BLOQUEADA = "bloqueada"
+    # "Borrada" por la orquesta: la fila se conserva para que las reservas no pierdan su fecha
+    # (borrado lógico, SPEC §4.9). No aparece en ningún listado.
+    RETIRADA = "retirada"
     
     
 class Disponibilidad(Base):
@@ -44,4 +47,4 @@ class Disponibilidad(Base):
     precio: Mapped[Decimal] = mapped_column(Numeric(10,2))
     notas: Mapped[str | None] = mapped_column(String(255))
     orquesta: Mapped["Orquesta"] = relationship("Orquesta", back_populates="disponibilidades")
-    reservas: Mapped[list["Reserva"]] = relationship(back_populates="disponibilidad")
+    reservas: Mapped[list["Reserva"]] = relationship(back_populates="disponibilidad", passive_deletes=True)

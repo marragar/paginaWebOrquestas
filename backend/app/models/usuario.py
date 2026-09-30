@@ -47,4 +47,6 @@ class Usuario(Base):
     creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True),server_default=func.now())
 
     # TODO: relationship con reservas (un usuario tiene muchas reservas)
-    reservas: Mapped[list["Reserva"]] = relationship(back_populates="usuario")
+    # passive_deletes: al borrar, los hijos los borra el ON DELETE CASCADE de la BD (si no, el ORM
+    # intenta poner a NULL su clave foránea y la BD lo rechaza)
+    reservas: Mapped[list["Reserva"]] = relationship(back_populates="usuario", passive_deletes=True)

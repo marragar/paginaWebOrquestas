@@ -189,22 +189,22 @@ son cuentas distintas). El token debe llevar también el tipo (`TipoCuenta` en `
 
 **Objetivo:** que los tests de endpoints usen una BD aislada y no la de desarrollo.
 
-1. [ ] Crea una segunda base de datos para tests (p. ej. `orquestas_test`) en el mismo contenedor
+1. [x] Crea una segunda base de datos para tests (p. ej. `orquestas_test`) en el mismo contenedor
        de PostgreSQL.
-2. [ ] En `tests/conftest.py`: fixture que crea las tablas (`Base.metadata.create_all`) y las borra
+2. [x] En `tests/conftest.py`: fixture que crea las tablas (`Base.metadata.create_all`) y las borra
        al terminar, o que envuelve cada test en una transacción con rollback.
-3. [ ] Sobrescribe la dependencia: `app.dependency_overrides[get_db] = ...`.
-4. [ ] Fixtures de ayuda que usarás mucho: `crear_usuario(es_admin=False)`, `crear_orquesta(verificada=True)`,
+3. [x] Sobrescribe la dependencia: `app.dependency_overrides[get_db] = ...`.
+4. [x] Fixtures de ayuda que usarás mucho: `crear_usuario(es_admin=False)`, `crear_orquesta(verificada=True)`,
        `crear_disponibilidad(orquesta, fecha)` y `headers_de(cuenta)` (devuelve la cabecera con el token).
-5. [ ] 🆕 Un helper `assert_error(respuesta, status, codigo)` que compruebe el código HTTP y
+5. [x] 🆕 Un helper `assert_error(respuesta, status, codigo)` que compruebe el código HTTP y
        `respuesta.json()["detail"]["codigo"]`. Los tests de reglas de negocio deben comprobar el
        **código**, no el texto.
-6. [ ] Completa `tests/test_security.py` con los casos de `core/deps.py` que necesitan cuentas
+6. [x] Completa `tests/test_security.py` con los casos de `core/deps.py` que necesitan cuentas
        reales (los del Paso 2 solo cubren lo que falla antes de ir a la BD):
-   - [ ] `get_current_usuario` / `get_current_orquesta` devuelven la cuenta si existe
-   - [ ] token válido de una cuenta que ya no existe → 401 `no_autenticado`
-   - [ ] `get_current_admin` con usuario normal → 403 `sin_permiso`; con admin, deja pasar
-   - [ ] `get_current_cuenta` devuelve el rol correcto (`usuario`, `admin`, `orquesta`)
+   - [x] `get_current_usuario` / `get_current_orquesta` devuelven la cuenta si existe
+   - [x] token válido de una cuenta que ya no existe → 401 `no_autenticado`
+   - [x] `get_current_admin` con usuario normal → 403 `sin_permiso`; con admin, deja pasar
+   - [x] `get_current_cuenta` devuelve el rol correcto (`usuario`, `admin`, `orquesta`)
 
 **Comprobación:** un test que cree un usuario y luego lo lea funciona dos veces seguidas sin
 chocar (la BD queda limpia entre tests).
@@ -217,8 +217,9 @@ chocar (la BD queda limpia entre tests).
 
 1. [ ] Schemas (plantillas con `TODO` en `schemas/`):
    - [ ] `UsuarioRegistroIn` en `schemas/usuario.py` — **sin** `es_admin` (si no, cualquiera
-         podría registrarse como admin). 🆕 `password` con `Field(min_length=8)`: el frontend
-         avisa de «Mínimo 8 caracteres».
+         podría registrarse como admin). 🆕 `password: Password` (tipo ya hecho en
+         `schemas/auth.py`: mínimo 8 caracteres, como avisa el frontend, y máximo 72 bytes, el
+         límite de bcrypt; úsalo también en `OrquestaRegistroIn`).
    - [ ] `OrquestaRegistroIn` en `schemas/orquesta.py` — sin `verificada`. 🆕 En lugar de un
          único `OrquestaOut` hay tres: `OrquestaPrivadaOut` (la propia orquesta y el admin),
          `OrquestaPublicaOut` (ficha, sin email) y `OrquestaResumenOut` (para anidar).
@@ -256,7 +257,8 @@ cambiarles el precio o retirarlos de una vez.
 
 1. [ ] Todas las rutas con `Depends(get_current_orquesta)`.
 2. [ ] `GET/PUT /mi-orquesta` (el `PUT` no debe permitir cambiar `verificada` ni `email`).
-3. [ ] `GET /mi-orquesta/disponibilidad`: todas sus fechas con estado, ordenadas por fecha.
+3. [ ] `GET /mi-orquesta/disponibilidad`: todas sus fechas con estado, ordenadas por fecha,
+       🆕 **menos las `retirada`** (§4.9).
        🆕 Cada una con `precio_final` (ver punto 8).
 4. [ ] `POST /mi-orquesta/disponibilidad`: acepta una lista de fechas (con precio y notas opcionales).
    - Regla §4.1: 🆕 422 `fecha_pasada`.
@@ -264,21 +266,29 @@ cambiarles el precio o retirarlos de una vez.
      `detail`, y **no se crea ninguna** (§4.13, una sola transacción).
    - 🆕 Acepta `estado`: `libre` (por defecto) o `bloqueada`. Bloquear un día sin fila la crea
      como `bloqueada` (§4.12).
+   - 🆕 Si el día tiene una fila `retirada`, **reutilízala** (cámbiale estado y precio) en vez
+     de crear otra: la restricción única la sigue contando (§4.15).
 5. [ ] `PATCH /mi-orquesta/disponibilidad/{id}`: cambiar precio, notas y pasar entre `libre` y
        `bloqueada` (§4.8). No se puede tocar a mano el estado `reservada` (🆕 409
-       `fecha_con_reserva`, §4.14).
+       `fecha_con_reserva`, §4.14). 🆕 Una fecha `retirada` da 404 `no_encontrado`.
+       🆕 Al bloquear, sus reservas `pendiente` pasan a `rechazada` en la misma transacción
+       (§4.8); desbloquear no las recupera.
 6. [ ] 🆕 `PATCH /mi-orquesta/disponibilidad` (sin id): lo mismo para varias fechas
        (`{"ids": [...], "estado"?, "precio"?}`), todo o nada.
-7. [ ] `DELETE /mi-orquesta/disponibilidad/{id}`:
-   - 404 `no_encontrado` si la fecha no es de esta orquesta (¡no dejes borrar las de otra!).
-   - Regla §4.9: 409 `fecha_con_reserva` si tiene una reserva `aceptada`.
-   - Si tiene reservas `pendiente`, decide qué pasa (SPEC §9) y apúntalo.
+7. [ ] `DELETE /mi-orquesta/disponibilidad/{id}`: 🆕 **no borra la fila, la retira** (borrado
+       lógico, §4.9): `estado = retirada`. Nada de `db.delete()`.
+   - 404 `no_encontrado` si la fecha no es de esta orquesta (¡no dejes retirar las de otra!) o
+     si ya está `retirada`.
+   - Regla §4.9: 409 `fecha_con_reserva` si está `reservada` (tiene una reserva `aceptada`).
+   - 🆕 Sus reservas `pendiente` pasan a `rechazada` (en la misma transacción).
    - [ ] 🆕 `DELETE /mi-orquesta/disponibilidad?ids=1,2,3`: varias a la vez, todo o nada.
 8. [ ] 🆕 **Precios en las respuestas:** `precio_final` = `precio` o, si es nulo, `precio_base`
        de la orquesta (SPEC §5.1). Y en los schemas de salida los precios van como `float`:
        Pydantic v2 serializa `Decimal` como texto y el frontend espera números.
 9. [ ] Tests de cada caso anterior, incluido que un token de usuario recibe 403. 🆕 Y que en una
-       operación múltiple con una fecha mala no se aplica ninguna.
+       operación múltiple con una fecha mala no se aplica ninguna. 🆕 Y los de la retirada:
+       las pendientes quedan `rechazada`, la fecha desaparece del calendario, volver a publicar
+       ese día reutiliza la fila. 🆕 Y que bloquear también rechaza las pendientes.
 
 ---
 

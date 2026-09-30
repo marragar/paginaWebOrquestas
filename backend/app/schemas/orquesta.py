@@ -5,7 +5,7 @@
 # decláralos como float:  precio_base: float | None
 # En los de ENTRADA puedes usar Decimal con Field(ge=0).
 
-# TODO: OrquestaRegistroIn — email, password (min 8), nombre, provincia, num_musicos (opcionales
+# TODO: OrquestaRegistroIn — email, password: Password (de auth.py), nombre, provincia, num_musicos (opcionales
 #       según §3). Nunca "verificada": la pone un admin.
 
 # TODO: OrquestaUpdateIn para PUT /mi-orquesta — nombre, descripcion, provincia, num_musicos,

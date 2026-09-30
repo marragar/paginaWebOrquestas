@@ -22,7 +22,7 @@ class UsuarioOut(BaseModel):
 # TODO: añadir creado_en: datetime a UsuarioOut (la pantalla de admin muestra la fecha de alta)
 
 # TODO: UsuarioRegistroIn (email, password, nombre, tipo y campos opcionales; ¡nunca es_admin!)
-#       password: str = Field(min_length=8)  — el frontend avisa de «Mínimo 8 caracteres»
+#       password: Password  (de app/schemas/auth.py: mínimo 8 caracteres y máximo 72 bytes)
 # TODO: UsuarioUpdateIn para PUT /mi-perfil — sin email (no se puede cambiar) ni es_admin
 
 # TODO: UsuarioResumenOut — lo que ve la orquesta de quien le pide una fecha (SPEC §5.2):

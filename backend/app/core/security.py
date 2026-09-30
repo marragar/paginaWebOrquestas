@@ -16,11 +16,19 @@ class TipoCuenta(str, enum.Enum):
     ORQUESTA = "orquesta"
 
 
+# bcrypt solo usa los primeros 72 bytes y, desde bcrypt 5, lanza ValueError si se pasan más.
+# Los schemas de registro lo limitan con el tipo Password (app/schemas/auth.py).
+MAX_BYTES_PASSWORD = 72
+
+
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 
 def verify_password(password: str, password_hash: str) -> bool:
+    # Una contraseña más larga no pudo registrarse, así que nunca coincide (y evita el ValueError)
+    if len(password.encode()) > MAX_BYTES_PASSWORD:
+        return False
     return bcrypt.checkpw(password.encode(), password_hash.encode())
 
 

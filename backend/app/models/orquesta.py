@@ -21,7 +21,6 @@ if TYPE_CHECKING:
 
 
 class TipoOrquesta(str, enum.Enum):
-
     DIRECTO = "orquesta_directo"  # Musicos en Directo
     PLAYBACK = "orquesta_playback"  # Sin Musicos en Directo
 
@@ -45,4 +44,5 @@ class Orquesta(Base):
     creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True),server_default=func.now())
 
     # TODO: relationship con disponibilidades (una orquesta tiene muchas), cuando exista el modelo:
-    disponibilidades: Mapped[list["Disponibilidad"]] = relationship(back_populates="orquesta")
+    # passive_deletes: ver el comentario en Usuario.reservas
+    disponibilidades: Mapped[list["Disponibilidad"]] = relationship(back_populates="orquesta", passive_deletes=True)

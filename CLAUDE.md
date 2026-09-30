@@ -41,6 +41,7 @@ Frontend (Vite, sin linter ni tests configurados): `npm run dev`, `npm run build
 - Los modelos usan `Mapped[...]` y enums con `values_callable` para guardar el valor (`junta_vecinal`), no el nombre; `usuario.py` es el modelo de referencia. Los imports de `TYPE_CHECKING` van como `app.models.…` (sin `backend.`). Los modelos deben importarse en `models/__init__.py` para que Alembic los vea.
 - **Alembic autogenerate no detecta cambios de valores de enum ni índices parciales**: revisa siempre la migración generada y escribe a mano los `ALTER TYPE`.
 - Reglas clave de reservas (SPEC §4): aceptar una reserva es una única transacción con `SELECT … FOR UPDATE` sobre la disponibilidad (reserva → `aceptada`, disponibilidad → `reservada`, resto de pendientes de ese día → `rechazada`), respaldada por un índice único parcial (`estado = 'aceptada'`). Las operaciones múltiples sobre `/mi-orquesta/disponibilidad` son todo o nada.
+- **Las fechas nunca se borran de la BD**: el `DELETE` las pasa a estado `retirada` (borrado lógico, SPEC §4.9 y §4.15), que no aparece en ningún listado. No uses `db.delete()` sobre disponibilidades.
 
 **Frontend** (React 19 + Vite + react-router 7, `frontend/src/`):
 - Vite hace proxy de `/api` al backend (`API_URL`); `api/client.js` envuelve `fetch`.

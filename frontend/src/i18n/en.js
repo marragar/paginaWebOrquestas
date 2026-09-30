@@ -54,6 +54,7 @@ export default {
     libre: 'Available',
     reservada: 'Booked',
     bloqueada: 'Blocked',
+    retirada: 'Withdrawn',
     verificada: 'Verified',
     sin_verificar: 'Not verified',
   },
